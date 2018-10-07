@@ -1,0 +1,247 @@
+EJERCICIO 1
+
+Tienen a su disposición el archivo sakila-db.zip, lo cual contiene dos archivos:
+
+    'sakila-schema.sql' : una serie de instrucciones en lenguaje SQL para crear una Base de Datos llamada 'sakila'
+    'sakila-data.sql' : una serie de instrucciones en SQL para insertar datos en la Base de Datos
+
+A partir de estos archivos, el ejercicio consiste en deducir el Modelo Lógico de Datos (Modelo Relacional) y el Modelo Conceptual de Datos (Modelo Entidad-Asociación).
+
+-----------------------------
+Ver documento "Modelos.pdf" |
+-----------------------------
+________________________________________________________________________________________
+
+¿De qué podría servir esta base de datos? ¿Cuál era su aplicación probable? ¿Cuál sería una adaptación posible más moderna?
+
+---------------------------------------------------
+- La base de datos serviría para algun sistema de arriendo de películas, que ya no es un negocio regular en estos dias.
+- Su aplicación podria haber facilitado el encontrar la disponibilidad de alguna de las peliculas guardadas dentro de sus estantes, o para dar a conocer los datos e indormación pertinente sobre una o más películas.
+- Si alguna antigua empresa de arriendo, quiere actualizarse a las plataformas de streaming modernas, pueden usar la misma base de datos para ingresarla en la plataforma y hacerla funcionar.
+---------------------------------------------------
+_____________________________________________________________________________________________
+
+
+
+EJERCICIO 2
+
+Se debe ejecutar el comando:
+
+mysql -u "x" -p "y" < "z".sql
+
+"x" = nombre de usuario generado.
+"y" = nombre de la base de datos que se desea cargar.
+"z" = dirección o ruta donde se localiza nuestra base de datos.
+
+Tras esto ingresar la contraseña generada.
+
+Para verificar que la base de datos está disponible, usamos en MySQL el comando "SHOW DATABASES;", que nos entregará una lista con las bases disponibles.
+
+Ejecutamos el comando "USE sakila;", y podremos operar la base de datos.
+
+EJERCICIO 3
+
+1) A partir de la tabla "film", mostrar solamente cuáles son los títulos de pelicula disponibles.
+
+Se ejecuta el comando "SELECT title FROM film LIMIT 10;"
+
++------------------+
+| title            |
++------------------+
+| ACADEMY DINOSAUR |
+| ACE GOLDFINGER   |
+| ADAPTATION HOLES |
+| AFFAIR PREJUDICE |
+| AFRICAN EGG      |
+| AGENT TRUMAN     |
+| AIRPLANE SIERRA  |
+| AIRPORT POLLOCK  |
+| ALABAMA DEVIL    |
+| ALADDIN CALENDAR |
++------------------+
+_____________________________________________________________________________________________________
+
+2) A partir de la tabla "film", mostrar de qué años son las peliculas disponibles. NB: utilizar la instrucción DISTINCT
+
+Se ejecuta el comando "SELECT DISTINCT release_year FROM film LIMIT 10;"
+
++--------------+
+| release_year |
++--------------+
+|         2006 |
++--------------+
+______________________________________________________________________________________________________
+
+
+3) Mostrar los títulos de pelicula en la tabla "film" que se puede arrendar por más de 4 días (rental_duration)
+
+Se ejecuta el comando "SELECT title, rental_duration FROM film WHERE rental_duration>=4 LIMIT 10;"
+
++------------------+-----------------+
+| title            | rental_duration |
++------------------+-----------------+
+| ACADEMY DINOSAUR |               6 |
+| ADAPTATION HOLES |               7 |
+| AFFAIR PREJUDICE |               5 |
+| AFRICAN EGG      |               6 |
+| AIRPLANE SIERRA  |               6 |
+| AIRPORT POLLOCK  |               6 |
+| ALADDIN CALENDAR |               6 |
+| ALAMO VIDEOTAPE  |               6 |
+| ALASKA PHANTOM   |               6 |
+| ALI FOREVER      |               4 |
++------------------+-----------------+
+
+4) En la tabla "payment", mostrar el customer_id, rental_id, amount y payment_date de todos los arriendos realizados entre las fechas 2005-07-01 y 2005-08-01
+
+Se ejecuta el comando "SELECT customer_id, rental_id, amount, payment_date FROM payment WHERE payment_date BETWEEN "2005-07-01" AND "2005-08-01" LIMIT 10;"
+
++-------------+-----------+--------+---------------------+
+| customer_id | rental_id | amount | payment_date        |
++-------------+-----------+--------+---------------------+
+|           1 |      4526 |   5.99 | 2005-07-08 03:17:05 |
+|           1 |      4611 |   5.99 | 2005-07-08 07:33:56 |
+|           1 |      5244 |   4.99 | 2005-07-09 13:24:07 |
+|           1 |      5326 |   4.99 | 2005-07-09 16:38:01 |
+|           1 |      6163 |   7.99 | 2005-07-11 10:13:46 |
+|           1 |      7273 |   2.99 | 2005-07-27 11:31:22 |
+|           1 |      7841 |   4.99 | 2005-07-28 09:04:45 |
+|           1 |      8033 |   4.99 | 2005-07-28 16:18:23 |
+|           1 |      8074 |   0.99 | 2005-07-28 17:33:39 |
+|           1 |      8116 |   0.99 | 2005-07-28 19:20:07 |
++-------------+-----------+--------+---------------------+
+
+EJERCICIO 4
+
+1) Contar el número de clientes en la tabla "CUSTOMER"
+
+Ejecutar el comando "SELECT count(*) FROM customer;"
+
++----------+
+| count(*) |
++----------+
+|      599 |
++----------+
+___________________________________________________________________________________________________________
+
+2) En la tabla "RENTAL", contar cuánto arriendos se realizó por cada cliente (NB: utilizar la instucción GROUP BY y COUNT)
+
+Ejecutar el comando "SELECT COUNT(rental_id), customer_id FROM rental GROUP BY customer_id LIMIT 10;"
+
++------------------+-------------+
+| COUNT(rental_id) | customer_id |
++------------------+-------------+
+|               32 |           1 |
+|               27 |           2 |
+|               26 |           3 |
+|               22 |           4 |
+|               38 |           5 |
+|               28 |           6 |
+|               33 |           7 |
+|               24 |           8 |
+|               23 |           9 |
+|               25 |          10 |
++------------------+-------------+
+____________________________________________________________________________________________________________
+
+3) ¿Qué devuelve la consulta SQL siguiente?
+
+SELECT MAX(total) FROM (SELECT customer_id,count(*) as total FROM rental GROUP BY customer_id) as t1;
+
+Devuelve la cantidad totak de clientes que están arrendando en t1.
+
+En pantalla:
++------------+
+| MAX(total) |
++------------+
+|         46 |
++------------+
+____________________________________________________________________________________________________________
+
+4) ¿Qué es un sub-consulta?
+
+Es una consulta que toma como referencia a otra conculta, como el ejercicio anterior.
+____________________________________________________________________________________________________________
+
+5) En la tabla "payment", mostrar el volumen de negocio realizado por cada miembro del staff (staff_id) en total.
+
+Se ejecuta el comando "SELECT staff_id, SUM(amount) FROM payment GROUP BY staff_id;"
+
++----------+-------------+
+| staff_id | SUM(amount) |
++----------+-------------+
+|        1 |    33489.47 |
+|        2 |    33927.04 |
++----------+-------------+
+___________________________________________________________________________________________________________
+
+6) En una consulta, mostrar el staff_id que ha realizado más volumen de negocio el dia 2005-08-23.
+
+EJERCICIO 5
+
+1) En las peliculas "Film" y "Language", mostrar el título de la pelicula y el nombre de su idioma. (NB: utilizar una operación de INNER JOIN)
+
+Se ejecuta el comando "SELECT title, name FROM film INNER JOIN language ON film.language_id = language.language_id LIMIT 10;"
+
++------------------+---------+
+| title            | name    |
++------------------+---------+
+| ACADEMY DINOSAUR | English |
+| ACE GOLDFINGER   | English |
+| ADAPTATION HOLES | English |
+| AFFAIR PREJUDICE | English |
+| AFRICAN EGG      | English |
+| AGENT TRUMAN     | English |
+| AIRPLANE SIERRA  | English |
+| AIRPORT POLLOCK  | English |
+| ALABAMA DEVIL    | English |
+| ALADDIN CALENDAR | English |
++------------------+---------+
+____________________________________________________________________________________________________________
+
+2) Mostrar los nombres y apellidos de los clientes que han arrendado la pelicula "CHICAGO NORTH"
+
+Se ejecuta el comando "SELECT first_name, last_name FROM customer INNER JOIN rental ON customer.customer_id = rental.customer_id INNER JOIN inventory ON rental.inventory_id = inventory.inventory_id INNER JOIN film ON inventory.inventory_id = film.film_id WHERE title = "CHICAGO NORTH";"
+
++------------+-----------+
+| first_name | last_name |
++------------+-----------+
+| THEODORE   | CULP      |
+| ALVIN      | DELOACH   |
+| HAROLD     | MARTINO   |
+| DANA       | HART      |
+| DEBBIE     | REYES     |
++------------+-----------+
+
+____________________________________________________________________________________________________________
+
+3) Mostrar por cada nombres y apellidos de cliente, en qué ciudad viven (tabla Customer y City)
+
+Se ejecuta el comando "SELECT first_name, last_name, city, customer_id FROM customer INNER JOIN address ON customer.address_id = address.address_id INNER JOIN city ON address.city_id = address.city_id;"
+
+  (Parte final del resultado en pantalla, dado que son cientos de datos)
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+| TERRANCE    | ROUSH        | Ziguinchor                 |         592 |
+| RENE        | MCALISTER    | Ziguinchor                 |         593 |
+| EDUARDO     | HIATT        | Ziguinchor                 |         594 |
+| TERRENCE    | GUNDERSON    | Ziguinchor                 |         595 |
+| ENRIQUE     | FORSYTHE     | Ziguinchor                 |         596 |
+| FREDDIE     | DUGGAN       | Ziguinchor                 |         597 |
+| WADE        | DELVALLE     | Ziguinchor                 |         598 |
+| AUSTIN      | CINTRON      | Ziguinchor                 |         599 |
++-------------+--------------+----------------------------+-------------+
+
+____________________________________________________________________________________________________________
+
+4) Mostrar cuántas veces fueron arrendadas las peliculas (mostrando el título de la pelicula)
+
+____________________________________________________________________________________________________________
+
+5) Mostrar qué pelicula generó más volumen de negocio
+
+
+____________________________________________________________________________________________________________
+
+6) Mostrar los clientes que arrendarón por más de 10 dolares de pelicula.
+____________________________________________________________________________________________________________
+

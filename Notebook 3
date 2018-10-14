@@ -1,0 +1,253 @@
+Ejercicio 1: Crear una BD de prueba básica
+
+1) Implementar la estructura de esta base de datos en MySQL indicando las claves primarias y foraneas y los tipos de datos
+
+Desde la terminal
+
+Abierto MySQL, creamos la base de datos "Valdivia":
+CREATE DATABASE valdivia;
+
+Seleccionamos la base de datos:
+USE Valdivia;
+
+Creamos la tablas de la base de datos:
+CREATE TABLE persona(pk_RUT VARCHAR(50) primary key, nombre VARCHAR(50), edad INTEGER(10));
+CREATE TABLE desplazarse(pk_RUT VARCHAR(50) NOT NULL, fecha VARCHAR(50), latitud INTEGER(10), longitud INTEGER(10), FOREIGN KEY (pk_RUT) REFERENCES persona(pk_RUT));
+CREATE TABLE lugar_de_interes(pk_Lugar INTEGER(10) primary key, descripcion VARCHAR(70), categoria VARCHAR(20), latitud INTEGER(10), longitud INTEGER(10))");
+
+2) Insertar al menos 5 filas en cada tabla
+
+INSERT INTO persona (pk_RUT,nombre,edad) VALUES ('14.123.527-2','Pricilla Bobadilla', 33);
+INSERT INTO persona (pk_RUT,nombre,edad) VALUES ('15.777.382-1','Joseline T.', 32);
+INSERT INTO persona (pk_RUT,nombre,edad) VALUES ('16.829.457-3','Claudia Jarias', 30);
+INSERT INTO persona (pk_RUT,nombre,edad) VALUES ('18.123.428-2','Stephen Tejedh', 25);
+INSERT INTO persona (pk_RUT,nombre,edad) VALUES ('16.102.619-3','Guille H.', 30);
+
+INSERT INTO desplazarse (pk_RUT,fecha,latitud, longitud) VALUES ('14.123.527-2','08/06/2001 13:15:00', -70, 10);
+INSERT INTO desplazarse (pk_RUT,fecha,latitud, longitud) VALUES ('15.777.382-1','07/07/2002 14:14:00', -60, 90);
+INSERT INTO desplazarse (pk_RUT,fecha,latitud, longitud) VALUES ('16.829.457-3','06/08/2003 15:13:00', -50, 60);
+INSERT INTO desplazarse (pk_RUT,fecha,latitud, longitud) VALUES ('18.123.428-2','05/09/2004 16:12:00', -40, 50);
+INSERT INTO desplazarse (pk_RUT,fecha,latitud, longitud) VALUES ('16.102.619-3','04/10/2005 17:11:00', -30, 30);
+
+INSERT INTO lugar_de_interes (pk_Lugar,descripcion,categoria,latitud,longitud) VALUES (1,'Ed. 6000','Estudio',24,-19);
+INSERT INTO lugar_de_interes (pk_Lugar,descripcion,categoria,latitud,longitud) VALUES (2,'Ed. 8000','Estudio',23,-18);
+INSERT INTO lugar_de_interes (pk_Lugar,descripcion,categoria,latitud,longitud) VALUES (3,'Ed. 9000','Estudio',22,-17);
+INSERT INTO lugar_de_interes (pk_Lugar,descripcion,categoria,latitud,longitud) VALUES (4,'Ed. 10000','Estudio',21,-16);
+INSERT INTO lugar_de_interes (pk_Lugar,descripcion,categoria,latitud,longitud) VALUES (5,'Ed. 7000','Estudio',20,-15);
+
+
+3) ¿A qué tipo de aplicación podría servir esta base de datos?
+
+Podría servir para una app. que estudié las conductas y preferencias de los estudiantes de una universidad.
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+
+
+Ejercicio 2: Realizar una copia de seguridad de una BD y exportar datos
+
+1) ¿Por qué hacer copias de seguridad de su base de datos?
+
+Por lo mismo que se llama así, seguridad. Pese a las precauciones propias del programador, siempre es posible
+que ocurran accidentes a la hora de implementar o desarrollar una base de datos, de modo que un respaldo 
+ayudaria para los momentos en que el servidor original no funcione.
+
+2) Utilizar el comando Mysqldump para realizar una copia de su base de datos. ¿Cuál es el output de este comando?
+
+Se ejecuta el comando en otra terminal:
+mysqldump -u root -p Valdivia
+
+(Con esto generamos la instancia para crear el archivo con nuestra BD en la carpeta actual).
+mysqldump -u root -p Valdivia > valdi.sql
+
+-- MySQL dump 10.13  Distrib 5.7.23, for Linux (x86_64)
+--
+-- Host: localhost    Database: Valdivia
+-- ------------------------------------------------------
+-- Server version	5.7.23-0ubuntu0.16.04.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `desplazarse`
+--
+
+DROP TABLE IF EXISTS `desplazarse`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `desplazarse` (
+  `pk_RUT` varchar(50) NOT NULL,
+  `fecha` varchar(50) DEFAULT NULL,
+  `latitud` int(10) DEFAULT NULL,
+  `longitud` int(10) DEFAULT NULL,
+  KEY `pk_RUT` (`pk_RUT`),
+  CONSTRAINT `desplazarse_ibfk_1` FOREIGN KEY (`pk_RUT`) REFERENCES `persona` (`pk_RUT`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `desplazarse`
+--
+
+LOCK TABLES `desplazarse` WRITE;
+/*!40000 ALTER TABLE `desplazarse` DISABLE KEYS */;
+INSERT INTO `desplazarse` VALUES ('14.123.527-2','08/06/2001 13:15:00',-70,10),('15.777.382-1','07/07/2002 14:14:00',-60,90),('16.829.457-3','06/08/2003 15:13:00',-50,60),('18.123.428-2','05/09/2004 16:12:00',-40,50),('16.102.619-3','04/10/2005 17:11:00',-30,30);
+/*!40000 ALTER TABLE `desplazarse` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `lugar_de_interes`
+--
+
+DROP TABLE IF EXISTS `lugar_de_interes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lugar_de_interes` (
+  `pk_Lugar` int(10) NOT NULL,
+  `descripcion` varchar(70) DEFAULT NULL,
+  `categoria` varchar(20) DEFAULT NULL,
+  `latitud` int(10) DEFAULT NULL,
+  `longitud` int(10) DEFAULT NULL,
+  PRIMARY KEY (`pk_Lugar`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `lugar_de_interes`
+--
+
+LOCK TABLES `lugar_de_interes` WRITE;
+/*!40000 ALTER TABLE `lugar_de_interes` DISABLE KEYS */;
+INSERT INTO `lugar_de_interes` VALUES (1,'Ed. 6000','Estudio',24,-19),(2,'Ed. 8000','Estudio',23,-18),(3,'Ed. 9000','Estudio',22,-17),(4,'Ed. 10000','Estudio',21,-16),(5,'Ed. 7000','Estudio',20,-15);
+/*!40000 ALTER TABLE `lugar_de_interes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `persona`
+--
+
+DROP TABLE IF EXISTS `persona`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `persona` (
+  `pk_RUT` varchar(50) NOT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `edad` int(10) DEFAULT NULL,
+  PRIMARY KEY (`pk_RUT`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `persona`
+--
+
+LOCK TABLES `persona` WRITE;
+/*!40000 ALTER TABLE `persona` DISABLE KEYS */;
+INSERT INTO `persona` VALUES ('14.123.527-2','Pricilla Bobadilla',33),('15.777.382-1','Joseline T.',32),('16.102.619-3','Guille H.',30),('16.829.457-3','Claudia Jarias',30),('18.123.428-2','Stephen Tejedh',25);
+/*!40000 ALTER TABLE `persona` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2018-10-13 21:06:45
+
+
+3) En algunos casos, queremos simplemente exportar datos para poder utilizarlos en otros contextos. ¿En qué consiste el
+formato de datos CSV? ¿Cómo exportar datos al formato CSV desde MySQL?
+
+CVS representa el que los valores son separados por comas. Su uso es para el intercambio de información entre aplicaciones.
+
+Desde la terminal para poder exportar datos usamos el comando:
+mysql -u root -p Valdivia -e 'SELECT * FROM persona'  > persona.csv
+
+Con esto generamos un archivo .csv
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+
+Ejercicio 3: Gestionar usuarios y privilegios de lectura y escritura
+
+1) ¿Cuáles son los tipos de privilegios en una base de datos relacional?
+
+En MySQL existen cinco niveles distintos de privilegios:
+
+Globales: se aplican al conjunto de todas las bases de datos en un servidor. Es el nivel más alto de privilegio, en el
+sentido de que su ámbito es el más general.
+De base de datos: se refieren a bases de datos individuales, y por extensión, a todos los objetos que contiene cada
+base de datos.
+De tabla: se aplican a tablas individuales, y por lo tanto, a todas las columnas de esas tabla.
+De columna: se aplican a una columna en una tabla concreta.
+De rutina: se aplican a los procedimientos almacenados. Aún no hemos visto nada sobre este tema, pero en MySQL se pueden almacenar procedimietos consistentes en varias consultas SQL.
+
+Fuente: http://mysql.conclase.net/curso/?cap=013
+
+
+2) Crear un nuevo usuario y darle todos los privilegios sobre la base de datos 'Valdivia':
+
+CREATE USER 'lalala'@'localhost' IDENTIFIED BY 'contraseña';
+GRANT ALL PRIVILEGES ON * . * TO 'user01'@'localhost';
+
+3) Crear un nuevo usuario, lo cual tendrá solamente acceso de lectura sobre la tabla Lugar_de_interes y Desplazarse:
+
+CREATE USER 'lelele'@'localhost' IDENTIFIED BY 'otra';
+GRANT ALL ON valdivia.lugar_de_interes TO 'lelele'@'localhost';
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+Ejercicio 4: Modificar la estructura de una Base de Datos
+
+1) Modificar la BD (sin borrarla) para agregar un campo 'nivel de estudio' en la tabla 'Persona'.
+
+ALTER TABLE persona ADD COLUMN nivel_est VARCHAR(15);
+
+Database changed
+mysql> ALTER TABLE persona ADD COLUMN nivel_est VARCHAR(15);
+Query OK, 0 rows affected (0,62 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+2) Modificar la BD (sin borrarla) para dejar la posibilidad de tener varias categorías para describir un lugar de interés
+(implica crear una tabla adicional):
+
+CREATE TABLE categoria (nombre_cat VARCHAR(50), pk_Lugar INTEGER(10) NOT NULL, PRIMARY KEY (nombre_cat, pk_Lugar), FOREIGN KEY (pk_Lugar) REFERENCES lugar_de_interes(pk_Lugar));
+
+3) Agregar una restricción para que las columnas "Latitud" y "Longitud" nuncan sean NULL:
+
+ALTER TABLE lugar_de_interes MODIFY latitud INTEGER(10) NOT NULL;
+ALTER TABLE lugar_de_interes MODIFY longitud INTEGER(10) NOT NULL;
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+Ejercicio 5 (opcional): Innovación para Valdivia - Smart City
+
+1) Revisar el concurso "Desafio Smart City": https://www.innoving.cl/smartcity
+
+2) Considerando que la empresa Telefonica del Sur podría darle acceso a ciertos datos telefónicos de la Ciudad, imagina
+un escenario de innovación basado sobre una base de datos similar a aquella que creamos.
+
+Puedo imaginar algo basado en el turismo, al tener acceso a este tipo de datos, se pueden gestionar diversas aplicaciones
+capaces de proveer facil y comodo acceso a valores turisticos o calidad de vida, que turistas podrían apreciar. Por parte
+de la gente local e incluso por aquellos que decidan asentarse, puede darse el uso de facilitar servicios (publicidad de
+estos), que cumplan con las nesesidades de quienes usen la aplicación. 

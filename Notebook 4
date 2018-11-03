@@ -1,0 +1,114 @@
+
+Ejercicio
+
+1) Diseñar una API a partir de un caso de uso que ustedes definen (por ejemplo, puede ser el caso de uso que han definido la semana pasada sobre el tema de SmartCity)
+
+Se diseñó una API a partir de la base de datos creada en el notebook 3, para este caso llamada "Valdivia".
+
+2) Implementar su API
+
+Tomando como referencia el programa de ejemplo:
+------------------------------------------------------------------------------------------------
+import flask
+import json
+from flask import request, jsonify
+import mysql.connector
+
+# Creación de una nueva aplicación web
+app = flask.Flask(__name__)
+
+# Conexión al SGBD
+  ## reemplazar 'root' por el password del usuario administrador de MySQL
+conn = mysql.connector.connect(user="root",host="localhost",password="root")
+cursor = conn.cursor()
+cursor.execute("USE Valdivia")
+
+# Definición de las rutas
+
+@app.route('/', methods=['GET'])
+def home():
+    return '''<h1>API Valdivia</h1>
+<p>Primer intento de desarrollar una API.</p>'''
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return "<h1>404</h1><p>The resource could not be found.</p>", 404
+
+@app.route('/api_valdivia/v1/persona/all', methods=['GET'])
+def api_all():
+    ## Consultar MySQL para obtener datos sobre las personas de la BD
+    result=cursor.execute('SELECT pk_RUT, nombre, edad FROM persona;')
+    all_films =cursor.fetchall()
+    ## Conservar el nombre de los atributos
+    row_headers=[x[0] for x in cursor.description]
+    ## Transformar resultados en datos JSON
+    json_data=[]
+    for result in all_films:
+        json_data.append(dict(zip(row_headers,result)))
+    return jsonify(json_data)
+
+@app.route('/api_valdivia/v1/persona', methods=['GET'])
+def api_filter():
+    ## Definir parametros posibles
+    query_parameters = request.args
+
+    pk_RUT = query_parameters.get('pk_RUT')
+    nombre = query_parameters.get('nombre')
+    edad = query_parameters.get('edad')
+    
+    ##Construir la consulta SQL según parametros
+    query = "SELECT pk_RUT, nombre, edad FROM persona WHERE"
+    to_filter = []
+
+    if pk_RUT:
+        query += ' pk_RUT=%s AND'
+        to_filter.append(pk_RUT)
+    if nombre:
+        query+= ' nombre=%s AND'
+        to_filter.append(nombre)
+    if edad:
+        query+= ' edad=%s AND'
+        to_filter.append(nombre)
+    if not (pk_RUT):
+        return page_not_found(404)
+    
+    query = query[:-4] + ';'
+    
+    print(query)
+    print(to_filter)
+    
+    ## Consultar
+    results=cursor.execute(query,to_filter)
+    some_personas =cursor.fetchall()
+    ## Conservar el nombre de los atributos
+    row_headers=[x[0] for x in cursor.description]
+    ## Transformar resultados en datos JSON
+    json_data=[]
+    for result in some_films:
+        json_data.append(dict(zip(row_headers,result)))
+    return jsonify(json_data)
+
+app.run(debug=False,port=1234)
+------------------------------------------------------------------------------------------------
+
+3) ¿Cómo podrían desplegar su API más allá de su computador local?
+
+Si es por el acceso de terceros a la BD, es posible por medio de crear usuarios, asignandole privilegios como lectores o editores de
+la BD, compartiendo la IP que poseo. También es posible portar la base de datos y su API en algún servidor online, que permita el
+mismo tipo de conectividad. 
+
+4) ¿Observan algunas limitaciones al momento de crear una API web basada en MySQL?
+
+Para lo visto y trabajado en este Notebook, nada en especial. Investigando un poco en internet, se mencionan problemas a la hora de
+intentar optimizar una base de datos de esta arquitectura, siendo que esta pueda terminar devolviendo datos incorrectos a las solicitudes.
+También se menciona que dependiendo del tamaño de la BD empleada, puede demorar más el hacer ciertas solicitudes, como a su vez puede ser
+redundante usar una API para una pequeña BD, como lo seria la trabajada en el punto 2).
+
+5) ¿Qué es el movimiento de Open Data? ¿En qué sentido podría aportar a la ciudad de Valdivia?
+
+Es un movimiento, que procura que aquellos datos de avances, estudios o condiciones de una localidad especifica sean compartidos
+abiertamente con el publico sin restricciones. Por esto entiendase registros geográficos, climáticos, etc.
+Valdivia es una ciudad universitaria, cede de diversos estudios ambientales y sobre biodiversidad. Para aquellas personas que trabajan en
+esto, podria resultar enormemente beneficioso poseer información aparte de la que por medios propios (o proporcionados por las instituciones
+a las que está asocioado), optimizando el tiempo o incluso abriendo nuevas posibilidades. Por otro lado, seria mas facil para el
+turismo (factor importante en la economía local), obtener información precisa sobre lugares y servicios que deseen conocer o probar.

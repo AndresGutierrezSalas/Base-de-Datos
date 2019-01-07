@@ -1,12 +1,15 @@
 
 Notebook 7 - Crear y consultar una Base de Datos no relacional orientada a Documentos (Mongo)
+
 Ejercicio 1: Primeros pasos desde Mongo CLI
 
-En un terminal, verificar si el SGBD Mongo ya está iniciado:
-
-ps -aux | grep mongod
+En un terminal, verificar si el SGBD Mongo ya está iniciado: ps -aux | grep mongod
 
 Si no está iniciado, iniciarlo con el comando: mongod
+
+mongodb   8281  1.5  1.0 1052208 80232 ?       Ssl  19:24   0:03 /usr/bin/mongod --config /etc/mongod.conf
+andres    8356  0.0  0.0  11472   896 pts/2    S+   19:27   0:00 grep --color=auto mongod
+
 
 Luego, abrir otra pestaña de terminal (CTRL + Shift + T) e iniciar el cliente CLI de mongo: mongo.
 
@@ -20,6 +23,8 @@ Mongo CLI no utiliza SQL para realizar operaciones CRUD (Create/Read/Update/Dele
 
 La variable db representa siempre la base de datos que estamos utilizando (en este caso "nb7-peliculas").
 
+------------------------------------------------------------------
+
 2) Creamos una colección actors
 
 db.actors.insert({firstname:"Will", lastname:"Smith"})
@@ -30,9 +35,15 @@ Verificamos que hemos realmente creado la coleccion con:
 
 db.actors.find()
 
+------------------------------------------------------------------
+
 3) Insertamos varios documentos en la colección en un solo comando:
 
 db.actors.insertMany([{firstname:"Scarlett", lastname:"Johanson"},{firstname:"Matt", lastname:"Damon"},{firstname:"Nathan", lastname:"Smith"}])
+
+
+
+-------------------------------------------------------------------
 
 4) Contamos cuántos documentos tenemos en la colección:
 

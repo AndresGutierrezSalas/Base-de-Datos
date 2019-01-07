@@ -256,17 +256,83 @@ En este segundo ejercicio, trabajaremos con una base de datos existente llamada 
 
 mongoimport --db nb7-peliculas --collection movieDetails --drop --file 
 
+---------------------------------------------------------------------------------------------------
+2019-01-07T16:31:37.775-0300    connected to: localhost
+2019-01-07T16:31:37.775-0300    dropping: nb7-pelic.movieDetails
+2019-01-07T16:31:38.244-0300    imported 2295 documents
+---------------------------------------------------------------------------------------------------
+
 A continuación, queremos realizar algunas consultas típicas para observar la diferencia entre el lenguaje de consulta SQL y el lenguaje de Mongo.
 
 Nota bena: ¿Qué pasa si agregan la función .pretty() al final de un comando? Por ejemplo: db.actors.find().pretty()
+----------------------------------------------------------------------------------------------------
+> db.actors.find().pretty()
+{
+        "_id" : ObjectId("5c336c266acb5d5f7c27d4b4"),
+        "firstname" : "Will",
+        "lastname" : "Smith"
+}
+-----------------------------------------------------------------------------------------------------------------
+Se imprime la información con un mejor orden, separando cada campo de información en una linea diferente.
+-----------------------------------------------------------------------------------------------------------------
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 1) Utilizar un comando Mongo para contar cuántos documentos hay en la colección 'movieDetails'. ¿Cuál sería el equivalente en SQL?
 
+-----------------------------------------------------
+> db.movieDetails.count()
+2295
+-----------------------------------------------------
+ select count(*)
+  from movieDetails;
+-----------------------------------------------------
+
+#####################################################
+
 2) Mostrar los títulos (title) y años de producción (year) de todas las peliculas de la colección. ¿A qué clausula SQL correspondría?
+
+------------------------------------------------------
+> db.movieDetails.find({},{title:1, year:1}).pretty()
+{
+        "_id" : ObjectId("5b107bec1d2952d0da9046e1"),
+        "title" : "A Million Ways to Die in the West",
+        "year" : 2014
+}
+...
+{
+        "_id" : ObjectId("5b107bec1d2952d0da9046f3"),
+        "title" : "Star Trek II: The Wrath of Khan",
+        "year" : 1982
+}
+------------------------------------------------------
+
+###################################################################################
 
 3) Contar las peliculas realizadas entre 1990 y 2000
 
+--------------------------------------------------------------
+> db.movieDetails.find({year: {"$lt": 2000 , "$gt": 1990}},{title:1, year:1}).pretty()
+{
+        "_id" : ObjectId("5b107bec1d2952d0da9046e2"),
+        "title" : "Wild Wild West",
+        "year" : 1999
+}
+...
+{
+        "_id" : ObjectId("5b107bec1d2952d0da904764"),
+        "title" : "The Naked Gun 2½: The Smell of Fear",
+        "year" : 1991
+}
+------------------------------------------------------------------
+
+######################################################################################
+
 4) ¿Cuáles son los titulos de peliculas que ganaron más de 5 awards?
+
+
+
+######################################################################################
 
 5) ¿Cuál es el rating promedio en el sitio imdb para todas las peliculas?
 

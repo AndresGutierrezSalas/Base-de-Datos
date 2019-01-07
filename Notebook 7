@@ -211,13 +211,41 @@ WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
 
 db.actors.update({firstname:"Matt"},{$push : {tab:["new_value"]}})
 
+------------------------------------------------------------------------------------------------
+> db.actors.update({firstname:"Matt"},{$push : {tab:["new_value"]}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+------------------------------------------------------------------------------------------------
+> db.actors.find()
+{ "_id" : ObjectId("5c336d975afc861e758f5901"), "firstname" : "Scarlett", "lastname" : "Johanson" }
+{ "_id" : ObjectId("5c336d975afc861e758f5902"), "firstname" : "Matt", "lastname" : "Damon", "tab" : [ 1, "a", [ "new_value" ] ] }
+{ "_id" : ObjectId("5c336d975afc861e758f5903"), "firstname" : "Nathan", "lastname" : "Lane" }
+------------------------------------------------------------------------------------------------
+
 ¿Cuál es el problema con el último comando? ¿Cuál es la diferencia con el comando siguiente?
 
 db.actors.update({firstname:"Matt"},{$push : {tab:"new_value"}})
+------------------------------------------------------------------------------------------------
+> db.actors.update({firstname:"Matt"},{$push : {tab:"new_value"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+------------------------------------------------------------------------------------------------
+> db.actors.find()
+{ "_id" : ObjectId("5c336d975afc861e758f5901"), "firstname" : "Scarlett", "lastname" : "Johanson" }
+{ "_id" : ObjectId("5c336d975afc861e758f5902"), "firstname" : "Matt", "lastname" : "Damon", "tab" : [ 1, "a", [ "new_value" ], "new_value" ] }
+{ "_id" : ObjectId("5c336d975afc861e758f5903"), "firstname" : "Nathan", "lastname" : "Lane" }
+-------------------------------------------------------------------------------------------------
+El problema es que si bien añade un elemento al arreglo "tab", este incluye los parentesis por fuera del atributo que se desea agregar.
+La diferencia es que con el último, simplemente se añade como se espera un nuevo atributo dentro del arreglo, siguiendo la forma que
+este poseeia previamente.
+-------------------------------------------------------------------------------------------------
 
 Cómo pueden verlo el SGBD no relacional Mongo es mucho más flexible que MySQL, pero deja mucho más posibilidad de equivocarse.
 
 No duden en consultar la documentación de Mongo para probar otros comandos CRUD: https://docs.mongodb.com/manual/crud/
+
+###################################################################################################################
+-------------------------------------------------------------------------------------------------------------------
+###################################################################################################################
+
 Ejercicio 2: Primeras consultas avanzadas con una colección de peliculas
 
 En este segundo ejercicio, trabajaremos con una base de datos existente llamada "movie details", la cual tiene 2295 documentos JSON resumiendo información sobre peliculas.

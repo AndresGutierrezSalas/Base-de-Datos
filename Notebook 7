@@ -17,13 +17,18 @@ Luego, abrir otra pestaña de terminal (CTRL + Shift + T) e iniciar el cliente C
 
 use nb7-peliculas
 
-Deberian ver como respuesta del sistema la respuesta: "switched to db nb7-peliculas"
+Deberian ver como respuesta del sistema la respuesta: "switched to db nb7-peliculas":
+
+---------------------------------------------------------------------------------------
+> use nb7-pelic
+switched to db nb7-pelic
+-----------------------------------------------------------------------------------------
 
 Mongo CLI no utiliza SQL para realizar operaciones CRUD (Create/Read/Update/Delete), utiliza su propia API parecida al lenguaje Javascript.
 
 La variable db representa siempre la base de datos que estamos utilizando (en este caso "nb7-peliculas").
 
-------------------------------------------------------------------
+########################################################################################
 
 2) Creamos una colección actors
 
@@ -31,37 +36,80 @@ db.actors.insert({firstname:"Will", lastname:"Smith"})
 
 Como pueden verlo, para crear la colección no tuvimos que definir la estructura de la colección, simplemente hemos insertado un documento.
 
+------------------------------------------------------------------------------------------
+> db.actors.find()
+> db.actors.insert({firstname:"Will", lastname:"Smith"})
+WriteResult({ "nInserted" : 1 })
+------------------------------------------------------------------------------------------
+
 Verificamos que hemos realmente creado la coleccion con:
 
 db.actors.find()
 
-------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+> db.actors.find()
+{ "_id" : ObjectId("5c336c266acb5d5f7c27d4b4"), "firstname" : "Will", "lastname" : "Smith" }
+------------------------------------------------------------------------------------------
+
+##########################################################################################
 
 3) Insertamos varios documentos en la colección en un solo comando:
 
 db.actors.insertMany([{firstname:"Scarlett", lastname:"Johanson"},{firstname:"Matt", lastname:"Damon"},{firstname:"Nathan", lastname:"Smith"}])
 
 
-
+---------------------------------------------------------------------------------------------
+> db.actors.insertMany([{firstname:"Scarlett", lastname:"Johanson"},{firstname:"Matt", lastname:"Damon"},{firstname:"Nathan", lastname:"Smith"}])
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("5c336d975afc861e758f5901"),
+                ObjectId("5c336d975afc861e758f5902"),
+                ObjectId("5c336d975afc861e758f5903")
+        ]
+}
 -------------------------------------------------------------------
+
+###########################################################################################
 
 4) Contamos cuántos documentos tenemos en la colección:
 
 db.actors.count()
 
+---------------------------------------------------------------------
+> db.actors.count()
+3
+---------------------------------------------------------------------
+
 Como en SQL, la API de Mongo permite construir consultas para filtrar, ordenar o agrupar datos. Sin embargo, la síntaxis es distinta (y amenudo menos simple e intuitiva que SQL).
+
+############################################################################################
 
 5) Filtramos los actores que se llaman 'Smith'
 
 db.actors.find({lastname:"Smith"})
 
+----------------------------------------------------------------------------------------------------
+> db.actors.find({lastname:"Smith"})
+{ "_id" : ObjectId("5c336d975afc861e758f5903"), "firstname" : "Nathan", "lastname" : "Smith" }
+----------------------------------------------------------------------------------------------------
+
 Mongo tambien permite modificar los datos (ojo: Mongo no tiene mecanismo interno para asegurar la coherencia de los datos, es la responsabilidad del programador de la aplicación).
+
+#############################################################################################
 
 6) Actualizamos un documento. Por ejemplo, "Nathan Smith" se llama ahora "Nathan Lane"
 
 db.actors.update({firstname:"Nathan", lastname:"Smith"},{$set : {lastname:"Lane"}})
 
+-----------------------------------------------------------------------------------------------------
+> db.actors.update({firstname:"Nathan", lastname:"Smith"},{$set : {lastname:"Lane"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+-----------------------------------------------------------------------------------------------------
+
 Este último comando va a actualizar el primer documento encontrado que corresponde al filtro definido.
+
+##############################################################################################
 
 7) Supongamos ahora que queremos agregar un campo "gender" en todos los documentos:
 
@@ -69,23 +117,95 @@ Este último comando va a actualizar el primer documento encontrado que correspo
 
 db.actors.update({},{$set : {gender:"M"}})
 
+--------------------------------------------------------------------------------------------------------------------
+> db.actors.update({},{$set : {gender:"M"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+--------------------------------------------------------------------------------------------------------------------
+> db.actors.find()
+{ "_id" : ObjectId("5c336d975afc861e758f5901"), "firstname" : "Scarlett", "lastname" : "Johanson", "gender" : "M" }
+{ "_id" : ObjectId("5c336d975afc861e758f5902"), "firstname" : "Matt", "lastname" : "Damon" }
+{ "_id" : ObjectId("5c336d975afc861e758f5903"), "firstname" : "Nathan", "lastname" : "Lane" }
+--------------------------------------------------------------------------------------------------------------------
+Anade el campo "gender" cuyo valor es "M" al "actor" "Scarlett".
+--------------------------------------------------------------------------------------------------------------------
+
 Para actualizar todos los documentos, y no simplemente el primero, podemos utilizar el comando:
 
 db.actors.update({},{$set : {gender:"M"}},{multi:true})
 
+--------------------------------------------------------------------------------------------------------------------
+> db.actors.update({},{$set : {gender:"M"}},{multi:true})
+WriteResult({ "nMatched" : 3, "nUpserted" : 0, "nModified" : 2 })
+--------------------------------------------------------------------------------------------------------------------
+> db.actors.find()
+{ "_id" : ObjectId("5c336d975afc861e758f5901"), "firstname" : "Scarlett", "lastname" : "Johanson", "gender" : "M" }
+{ "_id" : ObjectId("5c336d975afc861e758f5902"), "firstname" : "Matt", "lastname" : "Damon", "gender" : "M" }
+{ "_id" : ObjectId("5c336d975afc861e758f5903"), "firstname" : "Nathan", "lastname" : "Lane", "gender" : "M" }
+--------------------------------------------------------------------------------------------------------------------
+
+####################################################################################################################
+
 8) Actualizar el documento "Scarlett Johanson", para indicar que es una mujer (gender:"F").
+
+--------------------------------------------------------------------------------------------------------------------
+> db.actors.update({},{$set : {gender:"F"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+--------------------------------------------------------------------------------------------------------------------
+> db.actors.find()
+{ "_id" : ObjectId("5c336d975afc861e758f5901"), "firstname" : "Scarlett", "lastname" : "Johanson", "gender" : "F" }
+{ "_id" : ObjectId("5c336d975afc861e758f5902"), "firstname" : "Matt", "lastname" : "Damon", "gender" : "M" }
+{ "_id" : ObjectId("5c336d975afc861e758f5903"), "firstname" : "Nathan", "lastname" : "Lane", "gender" : "M" }
+--------------------------------------------------------------------------------------------------------------------
+
+####################################################################################################################
 
 9) Para suprimir un atributo, podemos utilizar el operador $unset. Por ejemplo:
 
 db.actors.update({},{$unset : {gender:1}},{multi:true})
 
+--------------------------------------------------------------------------------------------------------------------
+> db.actors.update({},{$unset : {gender:1}},{multi:true})
+WriteResult({ "nMatched" : 3, "nUpserted" : 0, "nModified" : 3 })
+--------------------------------------------------------------------------------------------------------------------
+> db.actors.find()
+{ "_id" : ObjectId("5c336d975afc861e758f5901"), "firstname" : "Scarlett", "lastname" : "Johanson" }
+{ "_id" : ObjectId("5c336d975afc861e758f5902"), "firstname" : "Matt", "lastname" : "Damon" }
+{ "_id" : ObjectId("5c336d975afc861e758f5903"), "firstname" : "Nathan", "lastname" : "Lane" }
+--------------------------------------------------------------------------------------------------------------------
+
+####################################################################################################################
+
 10) Para suprimir un documento completo, podemos utilizar el comando:
 
 db.actors.remove({lastname:"Smith"})
 
+--------------------------------------------------------------------------------------------------------------------
+> db.actors.remove({lastname:"Smith"})
+WriteResult({ "nRemoved" : 0 })
+--------------------------------------------------------------------------------------------------------------------
+> db.actors.find()
+{ "_id" : ObjectId("5c336d975afc861e758f5901"), "firstname" : "Scarlett", "lastname" : "Johanson" }
+{ "_id" : ObjectId("5c336d975afc861e758f5902"), "firstname" : "Matt", "lastname" : "Damon" }
+{ "_id" : ObjectId("5c336d975afc861e758f5903"), "firstname" : "Nathan", "lastname" : "Lane" }
+----------------------------------------------------------------------------------------------------------------
+
+####################################################################################################################
+
 11) Agregamos un atributo de tipo arreglo en un documento
 
 db.actors.update({firstname:"Matt"},{$set : {tab:[1,"a"]}})
+
+----------------------------------------------------------------------------------------------------------------
+> db.actors.update({firstname:"Matt"},{$set : {tab:[1,"a"]}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+-------------------------------------------------------------------------------------------------------------------
+> db.actors.find()
+{ "_id" : ObjectId("5c336d975afc861e758f5901"), "firstname" : "Scarlett", "lastname" : "Johanson" }
+{ "_id" : ObjectId("5c336d975afc861e758f5902"), "firstname" : "Matt", "lastname" : "Damon", "tab" : [ 1, "a" ] }
+{ "_id" : ObjectId("5c336d975afc861e758f5903"), "firstname" : "Nathan", "lastname" : "Lane" }
+-------------------------------------------------------------------------------------------------------------------
+
+####################################################################################################################
 
 12) Añadimos un valor en el arreglo con el operator $push
 

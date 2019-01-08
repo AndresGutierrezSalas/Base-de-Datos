@@ -7,9 +7,10 @@ En un terminal, verificar si el SGBD Mongo ya está iniciado: ps -aux | grep mon
 
 Si no está iniciado, iniciarlo con el comando: mongod
 
+--------------------------------------------------------------------------------------------------------------------
 mongodb   8281  1.5  1.0 1052208 80232 ?       Ssl  19:24   0:03 /usr/bin/mongod --config /etc/mongod.conf
 andres    8356  0.0  0.0  11472   896 pts/2    S+   19:27   0:00 grep --color=auto mongod
-
+--------------------------------------------------------------------------------------------------------------------
 
 Luego, abrir otra pestaña de terminal (CTRL + Shift + T) e iniciar el cliente CLI de mongo: mongo.
 
@@ -330,27 +331,59 @@ Se imprime la información con un mejor orden, separando cada campo de informaci
 
 4) ¿Cuáles son los titulos de peliculas que ganaron más de 5 awards?
 
-
+-----------------------------------------------------------------------
+> db.movieDetails.find({'awards.wins': {$gt: 5}} , {title:1}).pretty()
+{ "_id" : ObjectId("5b107bec1d2952d0da9046e2"), "title" : "Wild Wild West" }
+...
+{
+        "_id" : ObjectId("5b107bec1d2952d0da90470b"),
+        "title" : "The Adventures of Priscilla, Queen of the Desert"
+}
+---------------------------------------------------------------------------
 
 ######################################################################################
 
 5) ¿Cuál es el rating promedio en el sitio imdb para todas las peliculas?
 
+-----------------------------------------------------------------------------
+> db.movieDetails.aggregate({$group:{_id : "$type", prom:{$avg: "$imdb.rating"}}}).pretty();
+{ "_id" : "movie", "prom" : 6.5031560490940965 }
+-----------------------------------------------------------------------------
+
+########################################################################################
+
 6) ¿Cuáles son las peliculas en las cuales participó el actor Nicolas Cage?
+
+########################################################################################
 
 7) ¿Cuál es el número de pelicula por año?
 
+########################################################################################
+
 8) ¿Cuál es la pelicula con el mejor rating?
+
+########################################################################################
 
 9) ¿Cuáles son los thrillers con un rating de al meno 6?
 
+########################################################################################
+
 10) ¿Cuáles son todos los valores de generos posibles?
+
+########################################################################################
 
 11) ¿Cuáles son las peliculas que contienen la palabra 'Star'?
 
+########################################################################################
+
 12) ¿Cuáles son los títulos que empiezan con la letra 'T'?
 
+########################################################################################
+
 13) ¿Cuáles son las peliculas que no son de tipo Drama o Thriller?
+
+########################################################################################
+
 Ejercicio 3: Integrar Mongo con Python
 
 Desde un entorno Python, conectarse a su base de datos movieDetails y realizar consultas similares al ejercicio 2.
